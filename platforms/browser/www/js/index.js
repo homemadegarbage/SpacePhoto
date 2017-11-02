@@ -52,49 +52,10 @@ var app = {
 // Layout Elements
 var title = document.getElementById('title');
 var photo = document.getElementById('photo');
+var photo1 = document.getElementById('photo1');
+var photo2 = document.getElementById('photo2');
 var filter = document.getElementById('filter');
 var menu = document.getElementById('menu');
-
-// Canvas Elements
-var canvas1 = document.getElementById('canvas1'),
-    ctx1 = canvas1.getContext('2d');
-var canvas2 = document.getElementById('canvas2'),
-    ctx2 = canvas2.getContext('2d');
-canvas1.width = window.innerWidth;
-canvas1.width = window.innerHeight;
-canvas2.width = window.innerWidth;
-canvas2.width = window.innerHeight;
-
-var canvasWidth = canvas1.width,
-    canvasHeight = canvas1.height;
-
-//canvasWidth = window.innerWidth;
-//canvasHeight = window.innerHeight;
-var img = new Image();
-//ctx.drawImage(img,0,0);
-
-function setImg(ctx,imgSrc) {
-  img.src = imgSrc;
-  img.onload = function() {
-    var imgWidth = img.width,
-        imgHeight = img.height;
-    var canvasAspect = canvasWidth / canvasWidth, // canvasのアスペクト比
-        imgAspect = imgWidth / imgHeight, // 画像のアスペクト比
-        left, top, width, height;
-    if (imgAspect >= canvasAspect) {// 画像が横長
-        left = 0;
-        width = canvasWidth;
-        height = imgWidth;
-        top = (canvasHeight - height) / 2;
-    } else {// 画像が縦長
-        top = 0;
-        height = canvasHeight;
-        width = canvasHeight * imgAspect;
-        left = (canvasWidth - width) / 2;
-    }
-    ctx.drawImage(img, 0, 0, imgWidth, imgWidth, left, top, width, height);
-  }
-}
 
 // Button Elements
 var btnHome = document.getElementById('btnHome');
@@ -112,14 +73,6 @@ btnBack.addEventListener('touchstart', function (e) {
 btnNext.addEventListener('touchstart', function (e) {
 });
 btnFilter.addEventListener('touchstart', function (e) {
-    console.log(filter);
-/*    あとでアニメーション実装する
-    if (filter.className == '') {
-      filter.className = 'active';
-    } else {
-      filter.className = 'active';
-    }
-    */
     if (filter.style.display == '') {
       filter.style.display='block';
     } else {
@@ -128,9 +81,10 @@ btnFilter.addEventListener('touchstart', function (e) {
 });
 btnGallery.addEventListener('touchstart', function (e) {
     navigator.camera.getPicture(function(imageURI){
-      setImg(ctx2,imageURI);
+      photo.width = imageURI.width;
+      photo.width = imageURI.height;
+      photo1.setAttribute('src', imageURI);
     }, function(msg){
-//      alert("Error : " + msg);
     }, {
       quality:80,
       destinationType:Camera.DestinationType.FILE_URI,
@@ -144,7 +98,7 @@ var MyEventListener = function() { return this }
 // MyEventListener オブジェクトにonMouseClickメソッドを追加
 MyEventListener.prototype = {
   onMouseClick: function() { 
-    setImg(ctx1,this.getAttribute('src'));
+    photo2.setAttribute('src', this.getAttribute('src'));
     filter.style.display='';
   }
 }
@@ -154,30 +108,3 @@ var filters = filter.children;
 for (var i = 0; i < filters.length; i++){
     filters[i].addEventListener("click", myEventListener.onMouseClick, false);
 }
-
-/*
-function home() {
-      selectedPhoto.setAttribute('src', '');
-}
-
-function photo() {
-    navigator.camera.getPicture(function(imageURI){
-      selectedPhoto.setAttribute('src', imageURI);
-    }, function(msg){
-//      alert("Error : " + msg);
-    }, {
-      quality:80,
-      destinationType:Camera.DestinationType.FILE_URI,
-      sourceType:Camera.PictureSourceType.SAVEDPHOTOALBUM,
-    });
-
-}
-
-function filter() {
-    if (filter.style.display == '') {
-      filter.style.display='block';
-    } else {
-      filter.style.display='';
-    }
-}
-*/
