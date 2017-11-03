@@ -46,19 +46,47 @@
     <div id="title">
         <h1>Space Photo</h1>
         <div id="deviceready" class="blink">
-            <p class="event listening">Connecting to Device</p>
             <!--
+            <p class="event listening">Connecting to Device</p>
             <p class="event received">Gallery</p>
         -->
         </div>
     </div>
 
     <div id="photo">
+        <img src="" id="photo1">
+        <div id="photo2" class="multiply"></div>
+<!--
+        <img src="" id="photo2" class="multiply">
+    -->
     </div>
 
     <div id="filter">
         <img src="img/filter01.jpg">
         <img src="img/filter02.jpg">
+    </div>
+
+    <div id="blendMode">
+        <span id="multiply">乗算</span>
+        <span id="screen">スクリーン</span>
+        <span id="overlay">オーバーレイ</span>
+        <span id="darken">暗く</span>
+        <span id="lighten">明るく</span>
+        <span id="color-dodge">覆い焼きカラー</span>
+        <span id="color-burn">焼き込みカラー</span>
+        <span id="hard-light">ハードライト</span>
+        <span id="soft-light">ソフトライト</span>
+        <span id="difference">差の絶対値</span>
+        <span id="exclusion">除外</span>
+        <span id="hue">色相</span>
+        <span id="saturation">彩度</span>
+        <span id="color">カラー</span>
+        <span id="luminosity">輝度</span>
+    </div>
+
+    <div id="loader">
+        <div class="loader">
+        </div>
     </div>
 
     <div id="menu">
@@ -68,6 +96,7 @@
         <i id="btnFilter" class="fa fa-moon-o" aria-hidden="true">
             <i class="fa fa-star-o" aria-hidden="true"></i>
         </i>
+        <i id="btnTint" class="fa fa-tint" aria-hidden="true"></i>
         <i id="btnGallery" class="fa fa-picture-o" aria-hidden="true"></i>
     </div>
 
