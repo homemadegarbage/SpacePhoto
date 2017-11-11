@@ -206,11 +206,13 @@ btnGallery.addEventListener('touchstart', function (e) {
           var imgWidth = img.width;
           var imgHeight = img.height;
           var imgAspect = imgWidth / imgHeight;
+          alert(0);
 
           // canvas
           var ratio = imgWidth / windowWidth;
           canvasWidth = imgWidth / ratio *3 ;
           canvasHeight = imgHeight / ratio *3;
+          alert(1);
 
 
           canvas.width = canvasWidth;
@@ -221,9 +223,11 @@ btnGallery.addEventListener('touchstart', function (e) {
           canvas2.height = canvasHeight;
           blendModeCanvas.width = canvasWidth;
           blendModeCanvas.height = canvasHeight;
+          alert(2);
 
           ctx1.drawImage(img, 0, 0, canvasWidth, canvasHeight);
           imgUrl = canvas1.toDataURL();
+          alert(3);
 
           resolve();
         }
