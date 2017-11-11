@@ -22,90 +22,107 @@
 <html>
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="format-detection" content="telephone=no" />
-    <meta name="msapplication-tap-highlight" content="no" />
-    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
-    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
-    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" />
-    <!-- Good default declaration:
-    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
-    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
-    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
-        * Enable inline JS: add 'unsafe-inline' to default-src
-        * Enable eval(): add 'unsafe-eval' to default-src
-    * Create your own at http://cspisawesome.com
-    -->
-    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
-    <link rel="stylesheet" href="css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="css/index.css" />
-    <title>Space Photo</title>
+  <meta charset="utf-8" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="msapplication-tap-highlight" content="no" />
+
+  <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+  <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" />
+<!--  <meta http-equiv="Content-Security-Policy" content="default-src *;
+   img-src * 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' *;
+   style-src  'self' 'unsafe-inline' *">-->
+  <!-- Good default declaration:
+  * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+  * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+  * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+      * Enable inline JS: add 'unsafe-inline' to default-src
+      * Enable eval(): add 'unsafe-eval' to default-src
+  * Create your own at http://cspisawesome.com
+  -->
+  <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+  <link rel="stylesheet" href="css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" href="css/index.css" />
+  <title>Space Photo</title>
 </head>
 
 <body>
-    <div id="title">
-        <h1>Space Photo</h1>
-        <div id="deviceready" class="blink">
-            <!--
-            <p class="event listening">Connecting to Device</p>
-            <p class="event received">Gallery</p>
-        -->
-        </div>
-    </div>
+  <div id="title">
+      <h1>Space Photo</h1>
+      <div id="deviceready" class="blink">
+          <!--
+          <p class="event listening">Connecting to Device</p>
+          <p class="event received">Gallery</p>
+      -->
+      </div>
+  </div>
 
-    <div id="photo">
-        <img src="" id="photo1">
-        <div id="photo2" class="multiply"></div>
-<!--
-        <img src="" id="photo2" class="multiply">
-    -->
-    </div>
+  <div id="photo">
+    <canvas id="canvas1"></canvas>
+    <canvas id="canvas2"></canvas>
+    <canvas id="canvas"></canvas>
+  </div>
 
-    <div id="filter">
-        <img src="img/filter01.jpg">
-        <img src="img/filter02.jpg">
-    </div>
+  <div id="filter">
+    <img src="img/filter01.jpg">
+    <img src="img/filter02.jpg">
+  </div>
 
-    <div id="blendMode">
-        <span id="multiply">乗算</span>
-        <span id="screen">スクリーン</span>
-        <span id="overlay">オーバーレイ</span>
-        <span id="darken">暗く</span>
-        <span id="lighten">明るく</span>
-        <span id="color-dodge">覆い焼きカラー</span>
-        <span id="color-burn">焼き込みカラー</span>
-        <span id="hard-light">ハードライト</span>
-        <span id="soft-light">ソフトライト</span>
-        <span id="difference">差の絶対値</span>
-        <span id="exclusion">除外</span>
-        <span id="hue">色相</span>
-        <span id="saturation">彩度</span>
-        <span id="color">カラー</span>
-        <span id="luminosity">輝度</span>
-    </div>
+  <div id="blendMode">
+    <span id="subtract">減算</span>
+    <span id="multiple">乗算</span>
+    <span id="screen">スクリーン</span>
+    <span id="overlay">オーバーレイ</span>
+    <span id="hardlight">ハードライト</span>
+    <span id="darken">比較（暗）</span>
+    <span id="lighten">比較（明）</span>
+    <span id="difference">差の絶対値</span>
+    <span id="exclusion">除外</span>
+    <canvas id="blendModeCanvas"></canvas>
+    <!--
+    <span id="hue">色相</span>
+    <span id="saturation">彩度</span>
+    <span id="color">カラー</span>
+    <span id="luminosity">輝度</span>
+  -->
+  </div>
 
-    <div id="loader">
-        <div class="loader">
-        </div>
+  <div id="loader">
+    <div class="loader">
     </div>
+  </div>
 
-    <div id="menu">
-        <i id="btnHome" class="fa fa-home" aria-hidden="true"></i>
-        <i id="btnBack" class="fa fa-angle-left" aria-hidden="true"></i>
-        <i id="btnNext" class="fa fa-angle-right" aria-hidden="true"></i>
-        <i id="btnFilter" class="fa fa-moon-o" aria-hidden="true">
-            <i class="fa fa-star-o" aria-hidden="true"></i>
-        </i>
-        <i id="btnTint" class="fa fa-tint" aria-hidden="true"></i>
-        <i id="btnGallery" class="fa fa-picture-o" aria-hidden="true"></i>
-    </div>
+  <div id="menu">
+    <span id="btnHome">
+      <i class="fa fa-home" aria-hidden="true"></i>
+    </span>
+    <span id="btnBack">
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+    </span>
+    <span id="btnNext">
+      <i class="fa fa-angle-right" aria-hidden="true"></i>
+    </span>
+    <span id="btnFilter">
+      <i class="fa fa-moon-o" aria-hidden="true"></i>
+      <i class="fa fa-star-o" aria-hidden="true"></i>
+    </span>
+    <span id="btnTint">
+      <i class="fa fa-tint" aria-hidden="true"></i>
+    </span>
+    <span id="btnGallery">
+      <i class="fa fa-picture-o active" aria-hidden="true"></i>
+    </span>
+    <span id="btnSave">
+      <i class="fa fa-check" aria-hidden="true"></i>
+    </span>
+</div>
 
-    <script type="text/javascript" src="cordova.js"></script>
-    <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
-    <script type="text/javascript" src="js/index.js"></script>
-    <script type="text/javascript">
-        app.initialize();
-    </script>
+  <script type="text/javascript" src="cordova.js"></script>
+<!--  <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>-->
+  <script type="text/javascript" src="js/index.js"></script>
+  <script type="text/javascript">
+      app.initialize();
+  </script>
 </body>
 
 </html>

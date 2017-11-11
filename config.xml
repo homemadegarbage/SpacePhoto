@@ -114,4 +114,7 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
+    <engine name="ios" spec="~4.5.3" />
+    <engine name="browser" spec="~5.0.1" />
+    <plugin name="org.devgeeks.Canvas2ImagePlugin" spec="https://github.com/devgeeks/Canvas2ImagePlugin.git" />
 </widget>
