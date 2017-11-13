@@ -36,7 +36,7 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
-        alert("Got deviceready");
+//        alert("Got deviceready");
         canvas2ImagePlugin = window.canvas2ImagePlugin;
     },
     // Update DOM on a Received Event
@@ -147,6 +147,7 @@ btnTint.addEventListener('touchstart', function (e) {
   if (blendMode.style.display == '') {
     blendMode.style.display='block';
 
+/*
   for (var i = 0; i < blendModeChild.length; i++){
     var id = blendModeChild[i].id;
     if (i > 10) {
@@ -168,7 +169,7 @@ btnTint.addEventListener('touchstart', function (e) {
 
 
   }
-
+*/
   } else {
     blendMode.style.display='';
   }
