@@ -86,7 +86,7 @@ var ctx = canvas.getContext('2d');
 var ctx1 = canvas1.getContext('2d');
 var ctx2 = canvas2.getContext('2d');
 var blendModeCtx = blendModeCanvas.getContext('2d');
-var canvasWidth,canvasHeight;
+var canvasWidth,canvasHeight,canvasAspect;
 
 /* -----------------------------------------------------
  * Btn
@@ -128,10 +128,40 @@ MyEventListener.prototype = {
   onMouseClick: function() { 
     var img = new Image();
     img.src = this.getAttribute('src');
-    ctx2.drawImage(img, 0, 0, canvasWidth, canvasHeight);
 
-    var pixelImage = mixCanvas('screen');
-    ctx.putImageData(pixelImage, 0, 0);
+    img.onload = function() {
+
+      var imgWidth = img.width;
+      var imgHeight = img.height;
+      var imgAspect = imgWidth / imgHeight;
+      var sx,sy,sw,sh;
+
+      if (canvasAspect >= imgAspect ) {
+        var ratio = canvasWidth / imgWidth;
+        sx = 0;
+        sy = ( imgHeight * ratio - canvasHeight ) / ratio / 2;
+        sw = imgWidth;
+        sh = canvasHeight;
+      // フィルタ の方が横長
+      } else {
+//        alert(canvasAspect+' '+imgAspect);
+        var ratio = canvasHeight / imgHeight;
+        sx = ( imgWidth * ratio - canvasWidth ) / ratio / 2;
+        sy = 0;
+        sw = canvasWidth / ratio;
+        sh = imgHeight;
+      }
+      /*
+      alert(imgWidth+' '+canvasHeight+' '+imgHeight+' '+canvasWidth);
+      alert(sx+' '+sy+' '+sw+' '+sh);
+*/
+
+      ctx2.drawImage(img, sx, sy, sw, sh, 0, 0, canvasWidth, canvasHeight);
+
+      var pixelImage = mixCanvas('screen');
+      ctx.putImageData(pixelImage, 0, 0);
+    }
+
   } 
 }
 // MyEventListener から myEventListener オブジェクトを作成
@@ -206,7 +236,8 @@ btnGallery.addEventListener('touchstart', function (e) {
         img.onload = function() {
           var imgWidth = img.width;
           var imgHeight = img.height;
-          var imgAspect = imgWidth / imgHeight;
+//          alert(imgWidth);
+          canvasAspect = imgWidth / imgHeight;
 
           // canvas
           var ratio = imgWidth / windowWidth;
@@ -231,6 +262,8 @@ btnGallery.addEventListener('touchstart', function (e) {
         setTimeout("loader.setAttribute('class', '')", 1000);
       }, {
         quality:60,
+        targetWidth: 1280,
+        targetHeight: 1280,
         destinationType:Camera.DestinationType.DATA_URI,
         sourceType:Camera.PictureSourceType.SAVEDPHOTOALBUM,
       });
