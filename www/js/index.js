@@ -299,7 +299,8 @@ function mixCanvas(blend_type){
         brend_fn = function(a,b){return a+b-a*b/255;};
         break;
     case "overlay":
-        brend_fn = function(a,b){return (a<128)?2*a*b/255:a+b-2*a*b/255;};
+//        brend_fn = function(a,b){return (a<128)?2*a*b/255:a+b-2*a*b/255;};
+        brend_fn = function(a,b){return (a<128)?2*a*b/255:2*(a+b-a*b/255)-255;};
         break;
     case "hardlight":
         brend_fn = function(a,b){return (b<128)?2*a*b/255:a+b-2*a*b/255;};
@@ -345,6 +346,8 @@ function mixCanvas(blend_type){
         pixelImage.data[ptr + 3] = aA;
     }
   }
+
+
   return pixelImage;
 }
 
