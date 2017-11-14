@@ -70,10 +70,7 @@ img {
     height: 100%;
 }
 #photo1,
-#photo2,
-#canvas,
-#canvas1,
-#canvas2 {
+#photo2 {
   max-width: 100%;
   text-align: center;
   vertical-align: middle;
