@@ -71,7 +71,7 @@ var btnHome = document.getElementById('btnHome');
 var btnBack = document.getElementById('btnBack');
 var btnNext = document.getElementById('btnNext');
 var btnFilter = document.getElementById('btnFilter');
-var btnTint = document.getElementById('btnTint');
+var btnBlendMode = document.getElementById('btnBlendMode');
 var btnGallery = document.getElementById('btnGallery');
 var btnSave = document.getElementById('btnSave');
 
@@ -89,6 +89,12 @@ var ctx1 = canvas1.getContext('2d');
 var ctx2 = canvas2.getContext('2d');
 var canvasWidth,canvasHeight,canvasAspect;
 
+//filters
+//var 
+for (var i = 1; i <= 4; i++) {
+   console.log(i);
+
+}
 
 /* -----------------------------------------------------
  * Btn
@@ -147,9 +153,7 @@ MyEventListener.prototype = {
         sy = ( imgHeight * ratio - canvasHeight ) / ratio / 2;
         sw = imgWidth;
         sh = canvasHeight;
-      // フィルタ の方が横長
       } else {
-//        alert(canvasAspect+' '+imgAspect);
         var ratio = canvasHeight / imgHeight;
         sx = ( imgWidth * ratio - canvasWidth ) / ratio / 2;
         sy = 0;
@@ -162,11 +166,9 @@ MyEventListener.prototype = {
       */
 
       ctx2.drawImage(img, sx, sy, sw, sh, 0, 0, canvasWidth, canvasHeight);
-      photo.appendChild(canvas2);
 
       var pixelImage = mixCanvas('screen');
       ctx.putImageData(pixelImage, 0, 0);
-      photo.appendChild(canvas);
     }
 
   } 
@@ -178,35 +180,11 @@ for (var i = 0; i < filters.length; i++){
     filters[i].addEventListener("click", myEventListener.onMouseClick, false);
 }
 
-//========== Tint ==========
-btnTint.addEventListener('touchstart', function (e) {
+//========== btnBlendMode ==========
+btnBlendMode.addEventListener('touchstart', function (e) {
   loader.style.display='none';
   if (blendMode.style.display == '') {
     blendMode.style.display='block';
-
-/*
-  for (var i = 0; i < blendModeChild.length; i++){
-    var id = blendModeChild[i].id;
-    if (i > 10) {
-        break;
-    }
-    console.log(id);
-
-    var pixelImage = mixCanvas(id);
-    blendModeCtx.putImageData(pixelImage, 0, 0);
-    var imgSrc = blendModeCanvas.toDataURL('image/jpeg');
-
-    var img = document.createElement('img'); 
-    img.src = imgSrc;
-    blendMode.appendChild(img); 
-
-//    var pixelImage = mixCanvas(id);
-//    var dataUrl = pixelImage.toDataURL();
-
-
-
-  }
-*/
   } else {
     blendMode.style.display='';
   }
@@ -251,7 +229,6 @@ btnGallery.addEventListener('touchstart', function (e) {
 
           var imgWidth = img.width;
           var imgHeight = img.height;
-//          alert(imgWidth);
           canvasAspect = imgWidth / imgHeight;
 
           // canvas
@@ -270,12 +247,10 @@ btnGallery.addEventListener('touchstart', function (e) {
 
           ctx1.drawImage(img, 0, 0, canvasWidth, canvasHeight);
           imgUrl = canvas1.toDataURL();
-          photo.appendChild(canvas1);
         }
 
         resolve();
       }, function(msg){
-//        alert('0');
 //        setTimeout("loader.setAttribute('class', '')", 1000);
 
       }, {
@@ -290,7 +265,6 @@ btnGallery.addEventListener('touchstart', function (e) {
   getPic()
     .then(function() {
       var timer = setInterval(function() {
-//        if( imgUrl == canvas1.toDataURL() ){
         if( imgSrc == photo1.src ){
           clearInterval(timer);
           btnFilter.setAttribute('class', 'active');
@@ -307,8 +281,6 @@ btnGallery.addEventListener('touchstart', function (e) {
 
 //========== btnSave ==========
 btnSave.addEventListener('touchstart', function (e) {
-  // canvasに描画してから保存
-  alert(0);
   canvas2ImagePlugin.saveImageDataToLibrary (
     function(msg){
       alert('保存しました：' + msg);
@@ -393,57 +365,5 @@ function mixCanvas(blend_type){
         pixelImage.data[ptr + 3] = aA;
     }
   }
-
-
   return pixelImage;
-}
-
-//========== save ==========
-function download(URL, Folder_Name, File_Name) {
-//step to request a file system 
-    window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, fileSystemSuccess, fileSystemFail);
-
-  function fileSystemSuccess(fileSystem) {
-      var download_link = encodeURI(URL);
-      ext = download_link.substr(download_link.lastIndexOf('.') + 1); //Get extension of URL
-
-      var directoryEntry = fileSystem.root; // to get root path of directory
-      directoryEntry.getDirectory(Folder_Name, { create: true, exclusive: false }, onDirectorySuccess, onDirectoryFail); // creating folder in sdcard
-      var rootdir = fileSystem.root;
-      var fp = rootdir.fullPath; // Returns Fulpath of local directory
-
-      fp = fp + "/" + Folder_Name + "/" + File_Name + "." + ext; // fullpath and name of the file which we want to give
-      // download function call
-      filetransfer(download_link, fp);
-  }
-
-  function onDirectorySuccess(parent) {
-      // Directory created successfuly
-  }
-
-  function onDirectoryFail(error) {
-      //Error while creating directory
-      alert("Unable to create new directory: " + error.code);
-  }
-
-    function fileSystemFail(evt) {
-      //Unable to access file system
-      alert(evt.target.error.code);
-   }
-}
-
-function filetransfer(download_link, fp) {
-var fileTransfer = new FileTransfer();
-// File download function with URL and local path
-fileTransfer.download(download_link, fp,
-                    function (entry) {
-                        alert("download complete: " + entry.fullPath);
-                    },
-                 function (error) {
-                     //Download abort errors or download failed errors
-                     alert("download error source " + error.source);
-                     //alert("download error target " + error.target);
-                     //alert("upload error code" + error.code);
-                 }
-            );
 }
