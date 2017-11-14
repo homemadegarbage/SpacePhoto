@@ -58,9 +58,8 @@ var app = {
 // Layout Elements
 var title = document.getElementById('title');
 var photo = document.getElementById('photo');
-var canvas = document.getElementById('canvas');
-var canvas1 = document.getElementById('canvas1');
-var canvas2 = document.getElementById('canvas2');
+var photo1 = document.getElementById('photo1');
+var photo2 = document.getElementById('photo2');
 var filter = document.getElementById('filter');
 var blendMode = document.getElementById('blendMode');
 var blendModeCanvas = document.getElementById('blendModeCanvas');
@@ -82,11 +81,16 @@ var windowHeight = window.innerHeight;
 var windowAspect = window.innerWidth / window.innerHeight;
 
 //canvas
+/*
+var canvas = document.getElementById('canvas');
+var canvas1 = document.getElementById('canvas1');
+var canvas2 = document.getElementById('canvas2');
 var ctx = canvas.getContext('2d');
 var ctx1 = canvas1.getContext('2d');
 var ctx2 = canvas2.getContext('2d');
 var blendModeCtx = blendModeCanvas.getContext('2d');
 var canvasWidth,canvasHeight,canvasAspect;
+*/
 
 /* -----------------------------------------------------
  * Btn
@@ -126,6 +130,11 @@ var MyEventListener = function() { return this }
 // MyEventListener オブジェクトにonMouseClickメソッドを追加
 MyEventListener.prototype = {
   onMouseClick: function() { 
+    var imgSrc = this.getAttribute('src');
+    photo2.style.backgroundImage = 'url("' + imgSrc + '")';
+
+      /*
+
     var img = new Image();
     img.src = this.getAttribute('src');
 
@@ -151,16 +160,16 @@ MyEventListener.prototype = {
         sw = canvasWidth / ratio;
         sh = imgHeight;
       }
-      /*
       alert(imgWidth+' '+canvasHeight+' '+imgHeight+' '+canvasWidth);
       alert(sx+' '+sy+' '+sw+' '+sh);
-*/
 
       ctx2.drawImage(img, sx, sy, sw, sh, 0, 0, canvasWidth, canvasHeight);
 
       var pixelImage = mixCanvas('screen');
       ctx.putImageData(pixelImage, 0, 0);
+
     }
+*/
 
   } 
 }
@@ -210,9 +219,12 @@ var MyEventListener = function() { return this }
 MyEventListener.prototype = {
   onMouseClick: function() { 
     var id = this.id;
+    photo2.setAttribute('class', id);
+/*
     console.log(id);
     var pixelImage = mixCanvas(id);
     ctx.putImageData(pixelImage, 0, 0);
+    */
   }
 }
 // MyEventListener から myEventListener オブジェクトを作成
@@ -231,9 +243,14 @@ btnGallery.addEventListener('touchstart', function (e) {
   var getPic = function(done) {
     return new Promise(function(resolve, reject) {
       navigator.camera.getPicture(function(imgUri){
+        photo1.width = windowWidth;
+        imgSrc = imgUri;
+        photo1.src = imgUri;
+          /*
         var img = new Image();
         img.src = imgUri;
         img.onload = function() {
+
           var imgWidth = img.width;
           var imgHeight = img.height;
 //          alert(imgWidth);
@@ -255,11 +272,13 @@ btnGallery.addEventListener('touchstart', function (e) {
 
           ctx1.drawImage(img, 0, 0, canvasWidth, canvasHeight);
           imgUrl = canvas1.toDataURL();
-
-          resolve();
         }
+*/
+        resolve();
       }, function(msg){
-        setTimeout("loader.setAttribute('class', '')", 1000);
+//        alert('0');
+//        setTimeout("loader.setAttribute('class', '')", 1000);
+
       }, {
         quality:60,
         targetWidth: 1280,
@@ -272,20 +291,15 @@ btnGallery.addEventListener('touchstart', function (e) {
   getPic()
     .then(function() {
       var timer = setInterval(function() {
-        if( imgUrl == canvas1.toDataURL() ){
+//        if( imgUrl == canvas1.toDataURL() ){
+        if( imgSrc == photo1.src ){
           clearInterval(timer);
           btnFilter.setAttribute('class', 'active');
           btnSave.setAttribute('class', 'active');
           loader.setAttribute('class', '');
-//          var w1 = photo1.width + 'px';
-//          photo2.style.width = w1;
-//          photo2.style.height = photo1.height + 'px';
-   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: auto;
+          var w1 = photo1.width + 'px';
+          photo2.style.width = w1;
+          photo2.style.height = photo1.height + 'px';
 
         }
       },1000);
@@ -294,10 +308,78 @@ btnGallery.addEventListener('touchstart', function (e) {
 
 //========== btnSave ==========
 btnSave.addEventListener('touchstart', function (e) {
+  // canvasに描画してから保存
+  var canvas = document.createElement('canvas');
+  var canvas1 = document.createElement('canvas');
+  var canvas2 = document.createElement('canvas');
+  var ctx = canvas.getContext('2d');
+  var ctx1 = canvas1.getContext('2d');
+  var ctx2 = canvas2.getContext('2d');
+
+  // canvas1 に描画
+  var img = new Image();
+  img.src = photo1.src;
+  img.onload = function() {
+    var imgWidth = img.width;
+    var imgHeight = img.height;
+//          alert(imgWidth);
+    canvasAspect = imgWidth / imgHeight;
+
+    // canvas
+    var ratio = imgWidth / windowWidth;
+    canvasWidth = imgWidth / ratio *3 ;
+    canvasHeight = imgHeight / ratio *3;
+
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+    canvas1.width = canvasWidth;
+    canvas1.height = canvasHeight;
+    canvas2.width = canvasWidth;
+    canvas2.height = canvasHeight;
+    blendModeCanvas.width = canvasWidth;
+    blendModeCanvas.height = canvasHeight;
+
+    ctx1.drawImage(img, 0, 0, canvasWidth, canvasHeight);
+    imgUrl = canvas1.toDataURL();
+  }
+  // canvas2 に描画
+  var img = new Image();
+  img.src = photo2.style.backgroundImage;
+  img.onload = function() {
+    var imgWidth = img.width;
+    var imgHeight = img.height;
+    var imgAspect = imgWidth / imgHeight;
+    var sx,sy,sw,sh;
+
+    if (canvasAspect >= imgAspect ) {
+      var ratio = canvasWidth / imgWidth;
+      sx = 0;
+      sy = ( imgHeight * ratio - canvasHeight ) / ratio / 2;
+      sw = imgWidth;
+      sh = canvasHeight;
+    // フィルタ の方が横長
+    } else {
+//        alert(canvasAspect+' '+imgAspect);
+      var ratio = canvasHeight / imgHeight;
+      sx = ( imgWidth * ratio - canvasWidth ) / ratio / 2;
+      sy = 0;
+      sw = canvasWidth / ratio;
+      sh = imgHeight;
+    }
+    alert(imgWidth+' '+canvasHeight+' '+imgHeight+' '+canvasWidth);
+    alert(sx+' '+sy+' '+sw+' '+sh);
+
+    ctx2.drawImage(img, sx, sy, sw, sh, 0, 0, canvasWidth, canvasHeight);
+
+    var blendMode = photo2.className;
+    var pixelImage = mixCanvas(ctx,ctx1,ctx2,blendMode);
+    ctx.putImageData(pixelImage, 0, 0);
+  }
+
   alert(0);
   canvas2ImagePlugin.saveImageDataToLibrary (
     function(msg){
-      alert(msg);
+      alert('保存しました：' + msg);
 //      alert("Saving image is successful!");
 //      Ext.Msg.alert('Success!', 'The image was saved to the photos gallery on your device.');
     },
@@ -305,13 +387,13 @@ btnSave.addEventListener('touchstart', function (e) {
       alert(err);
 //        console.log(err);
     },
-    document.getElementById('canvas')
+    canvas
   );
 });
 
 
 //========== mixCanvas ==========
-function mixCanvas(blend_type){
+function mixCanvas(ctx,ctx1,ctx2,blend_type){
   var pixelImage = ctx.createImageData(canvasWidth, canvasHeight);
   var a_imageData = ctx1.getImageData(0, 0, canvasWidth, canvasHeight);
   var b_imageData = ctx2.getImageData(0, 0, canvasWidth, canvasHeight);
