@@ -315,6 +315,7 @@ btnSave.addEventListener('touchstart', function (e) {
   var ctx = canvas.getContext('2d');
   var ctx1 = canvas1.getContext('2d');
   var ctx2 = canvas2.getContext('2d');
+  var canvasWidth,canvasHeight,canvasAspect;
 
   // canvas1 に描画
   var img = new Image();
