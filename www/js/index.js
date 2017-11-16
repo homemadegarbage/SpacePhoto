@@ -17,7 +17,6 @@
  * under the License.
  */
 
-var canvas2ImagePlugin;
 var app = {
     // Application Constructor
     initialize: function() {
@@ -37,7 +36,7 @@ var app = {
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
 //        alert("Got deviceready");
-        canvas2ImagePlugin = window.canvas2ImagePlugin;
+//        canvas2ImagePlugin = window.canvas2ImagePlugin;
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -152,7 +151,11 @@ MyEventListener.prototype = {
         sx = 0;
         sy = ( imgHeight * ratio - canvasHeight ) / ratio / 2;
         sw = imgWidth;
-        sh = canvasHeight;
+        sh = canvasHeight / ratio;
+        /*
+        alert(canvasWidth+' '+canvasHeight+' '+imgWidth+' '+imgHeight);
+        alert(sx+' '+sy+' '+sw+' '+sh);
+        */
       } else {
         var ratio = canvasHeight / imgHeight;
         sx = ( imgWidth * ratio - canvasWidth ) / ratio / 2;
@@ -281,7 +284,7 @@ btnGallery.addEventListener('touchstart', function (e) {
 
 //========== btnSave ==========
 btnSave.addEventListener('touchstart', function (e) {
-  canvas2ImagePlugin.saveImageDataToLibrary (
+  window.canvas2ImagePlugin.saveImageDataToLibrary (
     function(msg){
       alert('保存しました：' + msg);
 //      alert("Saving image is successful!");

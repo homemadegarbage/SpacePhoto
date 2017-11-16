@@ -147,10 +147,10 @@ img {
 .color-burn {
     mix-blend-mode: color-burn;
 }
-.hard-light {
+.hardlight {
     mix-blend-mode: hard-light;
 }
-.soft-light {
+.softlight {
     mix-blend-mode: soft-light;
 }
 .difference {
