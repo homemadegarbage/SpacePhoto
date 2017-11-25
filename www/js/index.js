@@ -63,9 +63,11 @@ var filter = document.getElementById('filter');
 
 // Blend
 var blendMode = document.getElementById('blendMode');
-//var blendModeCanvas = document.getElementById('blendModeCanvas');
+/*
+var blendModeCanvas = document.getElementById('blendModeCanvas');
 var screen = document.getElementById('screen');
 var overlay = document.getElementById('overlay');
+*/
 var loader = document.getElementById('loader');
 var menu = document.getElementById('menu');
 var opacity = document.getElementById('opacity');
@@ -99,13 +101,35 @@ var canvasWidth,canvasHeight,canvasAspect;
 
 //filters
 //var 
-for (var i = 1; i <= 4; i++) {
-   console.log(i);
+var filterImages = [];
+var filterCount = 13;
 
+for (var i = 1; i <= filterCount; i++) {
+  filterImages[i] = new Image();
+  var src = 'img/filter' + zeroPadding(i,2) + '.jpg';
+
+  filterImages[i].onload = finish(i);
+  filterImages[i].src = src;
+  var element = document.createElement('img');
+  filter.append(element);
+
+  function finish(i){
+    return function(){
+      var b64 = ImageToBase64(filterImages[i], 'image/jpeg', 50);
+      var filterImg = document.querySelector('#filter img:nth-child(' + i + ')');
+      filterImg.src = b64;
+
+//      filter.append(filterImages[i]);
+      console.log(i);
+    }
+  }
 }
+var filters = filter.children;
+
+
 
 /* -----------------------------------------------------
- * Btn
+ * tool
  * ----------------------------------------------------*/
 function checkActive(btn) {
   var btnClass = btn.className;
@@ -114,6 +138,27 @@ function checkActive(btn) {
     return true;
   }
 }
+function zeroPadding(number, length){
+  return (Array(length).join('0') + number).slice(-length);
+}
+function ImageToBase64(img, mime_type, height) {
+  // New Canvas
+  var canvas = document.createElement('canvas');
+  w = img.width / ( img.height / height);
+  canvas.width  = w;
+  canvas.height = height;
+  // Draw Image
+  var ctx = canvas.getContext('2d');
+//  ctx.drawImage(img, 0, 0);
+  ctx.drawImage(img, 0, 0, img.width, img.height,0 ,0 , w, height);
+
+  // To Base64
+  return canvas.toDataURL(mime_type);
+}
+
+/* -----------------------------------------------------
+ * Btn
+ * ----------------------------------------------------*/
 
 /*
 //========== Home ==========
@@ -149,9 +194,13 @@ var MyEventListener = function() { return this }
 // MyEventListener オブジェクトにonMouseClickメソッドを追加
 MyEventListener.prototype = {
   onMouseClick: function() { 
-    var imgSrc = this.getAttribute('src');
-    photo2.style.backgroundImage = 'url("' + imgSrc + '")';
+    elements = [].slice.call( filters );
+    var index = elements.indexOf( this );
+    index++; 
+    var imgSrc = filterImages[index].src;
 
+    console.log(imgSrc);
+    photo2.style.backgroundImage = 'url("' + imgSrc + '")';
     var img = new Image();
     img.src = this.getAttribute('src');
 
@@ -186,7 +235,7 @@ MyEventListener.prototype = {
 
       ctx2.drawImage(img, sx, sy, sw, sh, 0, 0, canvasWidth, canvasHeight);
 
-      var pixelImage = mixCanvas('screen');
+      var pixelImage = mixCanvas('overlay');
       ctx.putImageData(pixelImage, 0, 0);
     }
 
@@ -194,10 +243,10 @@ MyEventListener.prototype = {
 }
 // MyEventListener から myEventListener オブジェクトを作成
 var myEventListener = new MyEventListener();
-var filters = filter.children;
 for (var i = 0; i < filters.length; i++){
     filters[i].addEventListener("click", myEventListener.onMouseClick, false);
 }
+/*
 // BlendMode
 // MyEventListener オブジェクト作成
 var MyEventListener = function() { return this }
@@ -228,7 +277,7 @@ var blendModeChild = blendMode.querySelector('ul').children;
 for (var i = 0; i < blendModeChild.length; i++){
     blendModeChild[i].addEventListener("click", myEventListener.onMouseClick, false);
 }
-
+*/
 //========== bar ==========
 function setPosition(element) {
   var touchObject = event.changedTouches[0] ;
@@ -371,42 +420,11 @@ function mixCanvas(blend_type){
 
   var brend_fn;
   switch(blend_type){
-    case "add":
-        brend_fn = function(a,b){return Math.min(a+b,255);};
-        break;
-    case "subtract":
-        brend_fn = function(a,b){return Math.max(a-b,0);};
-        break;
-    case "multiple":
-        brend_fn = function(a,b){return a*b/255;};
-        break;
     case "screen":
         brend_fn = function(a,b){return a+b-a*b/255;};
         break;
     case "overlay":
-//        brend_fn = function(a,b){return (a<128)?2*a*b/255:a+b-2*a*b/255;};
         brend_fn = function(a,b){return (a<128)?2*a*b/255:2*(a+b-a*b/255)-255;};
-        break;
-    case "hardlight":
-        brend_fn = function(a,b){return (b<128)?2*a*b/255:a+b-2*a*b/255;};
-        break;
-    case "darken":
-        brend_fn = function(a,b){return Math.min(a,b);};
-        break;
-    case "lighten":
-        brend_fn = function(a,b){return Math.max(a,b);};
-        break;
-    case "difference":
-        brend_fn = function(a,b){return Math.abs(a-b);};
-        break;
-    case "exclusion":
-        brend_fn = function(a,b){return a+b-2*a*b/255;};
-        break;
-    case "ImageA":
-        brend_fn = function(a,b){return a;};
-        break;
-    case "ImageB":
-        brend_fn = function(a,b){return b;};
         break;
     default:
         brend_fn = function(){return 255;};
