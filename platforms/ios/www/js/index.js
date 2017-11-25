@@ -61,16 +61,21 @@ var photo1 = document.getElementById('photo1');
 var photo2 = document.getElementById('photo2');
 var filter = document.getElementById('filter');
 var blendMode = document.getElementById('blendMode');
-var blendModeCanvas = document.getElementById('blendModeCanvas');
+//var blendModeCanvas = document.getElementById('blendModeCanvas');
+var screen = document.getElementById('screen');
+var overlay = document.getElementById('overlay');
+
 var loader = document.getElementById('loader');
 var menu = document.getElementById('menu');
 
 // Button Elements
+/*
 var btnHome = document.getElementById('btnHome');
 var btnBack = document.getElementById('btnBack');
 var btnNext = document.getElementById('btnNext');
+*/
 var btnFilter = document.getElementById('btnFilter');
-var btnBlendMode = document.getElementById('btnBlendMode');
+//var btnBlendMode = document.getElementById('btnBlendMode');
 var btnGallery = document.getElementById('btnGallery');
 var btnSave = document.getElementById('btnSave');
 
@@ -100,11 +105,13 @@ for (var i = 1; i <= 4; i++) {
  * ----------------------------------------------------*/
 function checkActive(btn) {
   var btnClass = btn.className;
-  if ( btnClass != 'active' ) {
-    return;
+  console.log(btnClass);
+  if ( btnClass == 'active' ) {
+    return true;
   }
 }
 
+/*
 //========== Home ==========
 btnHome.addEventListener('touchstart', function (e) {
 //  selectedPhoto.setAttribute('src', '');
@@ -112,11 +119,14 @@ btnHome.addEventListener('touchstart', function (e) {
 
 //========== Back ==========
 btnBack.addEventListener('touchstart', function (e) {
+  
 });
 
 //========== Next ==========
 btnNext.addEventListener('touchstart', function (e) {
+  
 });
+*/
 
 //========== Filter ==========
 btnFilter.addEventListener('touchstart', function (e) {
@@ -124,8 +134,10 @@ btnFilter.addEventListener('touchstart', function (e) {
   loader.style.display='none';
   if (filter.style.display == '') {
     filter.style.display='block';
+    blendMode.style.display='block';
   } else {
     filter.style.display='';
+    blendMode.style.display='';
   }
 });
 // MyEventListener オブジェクト作成
@@ -182,16 +194,7 @@ var filters = filter.children;
 for (var i = 0; i < filters.length; i++){
     filters[i].addEventListener("click", myEventListener.onMouseClick, false);
 }
-
-//========== btnBlendMode ==========
-btnBlendMode.addEventListener('touchstart', function (e) {
-  loader.style.display='none';
-  if (blendMode.style.display == '') {
-    blendMode.style.display='block';
-  } else {
-    blendMode.style.display='';
-  }
-});
+// BlendMode
 // MyEventListener オブジェクト作成
 var MyEventListener = function() { return this }
 // MyEventListener オブジェクトにonMouseClickメソッドを追加
@@ -200,7 +203,17 @@ MyEventListener.prototype = {
     var id = this.id;
     photo2.setAttribute('class', id);
 
-    console.log(id);
+    if ( checkActive(this) ) {
+      return;
+    }
+    if ( id == 'screen' ) {
+      screen.className = 'active';
+      overlay.className = '';
+    } else {
+      screen.className = '';
+      overlay.className = 'active';
+    }
+
     var pixelImage = mixCanvas(id);
     ctx.putImageData(pixelImage, 0, 0);
 
@@ -212,6 +225,19 @@ var blendModeChild = blendMode.children;
 for (var i = 0; i < blendModeChild.length; i++){
     blendModeChild[i].addEventListener("click", myEventListener.onMouseClick, false);
 }
+
+
+//========== btnBlendMode ==========
+/*
+btnBlendMode.addEventListener('touchstart', function (e) {
+  loader.style.display='none';
+  if (blendMode.style.display == '') {
+    blendMode.style.display='block';
+  } else {
+    blendMode.style.display='';
+  }
+});
+*/
 
 //========== Gallerry ==========
 btnGallery.addEventListener('touchstart', function (e) {
@@ -236,8 +262,8 @@ btnGallery.addEventListener('touchstart', function (e) {
 
           // canvas
           var ratio = imgWidth / windowWidth;
-          canvasWidth = imgWidth / ratio *3 ;
-          canvasHeight = imgHeight / ratio *3;
+          canvasWidth = imgWidth;
+          canvasHeight = imgHeight;
 
           canvas.width = canvasWidth;
           canvas.height = canvasHeight;
@@ -270,6 +296,7 @@ btnGallery.addEventListener('touchstart', function (e) {
       var timer = setInterval(function() {
         if( imgSrc == photo1.src ){
           clearInterval(timer);
+          document.body.style.backgroundImage = 'none';
           btnFilter.setAttribute('class', 'active');
           btnSave.setAttribute('class', 'active');
           loader.setAttribute('class', '');

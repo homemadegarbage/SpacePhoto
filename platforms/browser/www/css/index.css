@@ -24,6 +24,8 @@ html {
 }
 body {
   background-color: black;
+  background-image: url(../img/filter04.jpg);
+  background-size: cover;
   font-family:'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, Arial, sans-serif;
   font-size:12px;
   width:100%;
@@ -109,23 +111,23 @@ img {
   font-size: 1.5em;
   line-height: 2em;
   background: rgba(0,0,0,0.5);
+  width: 100%;
+  box-sizing: border-box;
 
   display: none;
   position: absolute;
-  bottom: 50px;
-  height: 100px;
+  top: 0;
   z-index: 3;
   overflow-x: auto;
+
+  padding: 10px;
+  text-align: center;
+
+  color: #888;
 }
-#blendMode ul {
-  width: 1500px;
+#blendMode > span {
+  margin: 0 10px;
 }
-#blendMode img {
-  height: 50px;
-}
-#blendModeCanvas {
-  display: none;
-} 
 .multiply {
     mix-blend-mode: multiply;
 }
@@ -171,7 +173,30 @@ img {
 .luminosity {
     mix-blend-mode: luminosity;
 }
-
+#blendMode .active {
+  color: #fff;
+}
+#opacity {
+  width: 90%;
+  height: 3px;
+  background: black;
+  position: relative;
+  margin: 10px auto; 
+}
+#opacity .bar {
+  background: white;
+  height: 100%;
+}
+#opacity .btn {
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  background: white;
+  opacity: .8;
+  position: absolute;
+  top: -9px;
+  right: -10px;
+}
 
 /* -----------------------------------------------------
  * menu
@@ -202,7 +227,7 @@ img {
   font-size: 12px;
   width: 12px!important;
 }
-.active {
+#menu .active {
   color: white!important;
 }
 

@@ -78,16 +78,16 @@
     <!--
     <span id="add">加算</span>
     <span id="subtract">減算</span>
-  -->
     <span id="multiple">乗算</span>
-    <span id="screen">スクリーン</span>
-    <span id="overlay">オーバーレイ</span>
+    -->
+    <span id="screen" class="active">Screen</span>
+    <span id="overlay">Overlay</span>
+    <!--
     <span id="hardlight">ハードライト</span>
     <span id="softlight">ソフトライト</span>
     <span id="color-burn">焼き込みカラー</span>
     <span id="color-dodge">覆い焼きカラー</span>
     <span id="lighten">比較（明）</span>
-    <!--
     <span id="darken">比較（暗）</span>
     <span id="difference">差の絶対値</span>
     <span id="exclusion">除外</span>
@@ -95,32 +95,37 @@
     <span id="saturation">彩度</span>
     <span id="color">カラー</span>
     <span id="luminosity">輝度</span>
-   -->
-    <canvas id="blendModeCanvas"></canvas>
+    -->
+    <div id="opacity">
+      <div class="bar"></div>
+      <div class="btn"></div>
+    </div>
   </div>
 
   <div id="loader">
-    <div class="loader">
-    </div>
   </div>
 
   <div id="menu">
     <span id="btnHome">
       <i class="fa fa-home" aria-hidden="true"></i>
     </span>
+    <!--
     <span id="btnBack">
       <i class="fa fa-angle-left" aria-hidden="true"></i>
     </span>
     <span id="btnNext">
       <i class="fa fa-angle-right" aria-hidden="true"></i>
     </span>
+  -->
     <span id="btnFilter">
       <i class="fa fa-moon-o" aria-hidden="true"></i>
       <i class="fa fa-star-o" aria-hidden="true"></i>
     </span>
+    <!--
     <span id="btnBlendMode">
       <i class="fa fa-tint" aria-hidden="true"></i>
     </span>
+  -->
     <span id="btnGallery">
       <i class="fa fa-picture-o active" aria-hidden="true"></i>
     </span>
