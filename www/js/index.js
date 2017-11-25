@@ -57,16 +57,20 @@ var app = {
 // Layout Elements
 var title = document.getElementById('title');
 var photo = document.getElementById('photo');
-var photo1 = document.getElementById('photo1');
-var photo2 = document.getElementById('photo2');
+var photo1 = document.querySelector('#photo img');
+var photo2 = document.querySelector('#photo div');
 var filter = document.getElementById('filter');
+
+// Blend
 var blendMode = document.getElementById('blendMode');
 //var blendModeCanvas = document.getElementById('blendModeCanvas');
 var screen = document.getElementById('screen');
 var overlay = document.getElementById('overlay');
-
 var loader = document.getElementById('loader');
 var menu = document.getElementById('menu');
+var opacity = document.getElementById('opacity');
+var bar = document.querySelector('#opacity .bar span');
+var btn = document.querySelector('#opacity .btn');
 
 // Button Elements
 /*
@@ -213,7 +217,6 @@ MyEventListener.prototype = {
       screen.className = '';
       overlay.className = 'active';
     }
-
     var pixelImage = mixCanvas(id);
     ctx.putImageData(pixelImage, 0, 0);
 
@@ -221,11 +224,44 @@ MyEventListener.prototype = {
 }
 // MyEventListener から myEventListener オブジェクトを作成
 var myEventListener = new MyEventListener();
-var blendModeChild = blendMode.children;
+var blendModeChild = blendMode.querySelector('ul').children;
 for (var i = 0; i < blendModeChild.length; i++){
     blendModeChild[i].addEventListener("click", myEventListener.onMouseClick, false);
 }
 
+//========== bar ==========
+function setPosition(element) {
+  var touchObject = event.changedTouches[0] ;
+  var touchX = touchObject.pageX ;
+
+  // 要素の位置を取得
+  var clientRect = element.getBoundingClientRect() ;
+  var parentX = clientRect.left + window.pageXOffset ;
+  var parentW = clientRect.width;
+
+  if ( touchX < parentX || touchX > parentW ) {
+//    return;
+  }
+  // 要素内におけるタッチ位置を計算
+  var x = (touchX-parentX) / parentW * 100 ;
+
+  if ( x > 100 ) {
+    x = 100;
+  } else if ( x < 0 ) {
+    x = 0;
+  }
+  bar.style.width = x+'%';
+  btn.style.left = x+'%';
+  photo2.style.opacity = x/100;
+
+  console.log(x);
+}
+opacity.addEventListener('touchmove', function (event) {
+  setPosition(this);
+});
+opacity.addEventListener('touchend', function (event) {
+  setPosition(this);
+});
 
 //========== btnBlendMode ==========
 /*
@@ -313,7 +349,7 @@ btnGallery.addEventListener('touchstart', function (e) {
 btnSave.addEventListener('touchstart', function (e) {
   window.canvas2ImagePlugin.saveImageDataToLibrary (
     function(msg){
-      alert('保存しました：' + msg);
+      alert('Saving image is successful! : ' + msg);
 //      alert("Saving image is successful!");
 //      Ext.Msg.alert('Success!', 'The image was saved to the photos gallery on your device.');
     },
