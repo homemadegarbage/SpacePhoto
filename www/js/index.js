@@ -60,6 +60,8 @@ var photo = document.getElementById('photo');
 var photo1 = document.querySelector('#photo img');
 var photo2 = document.querySelector('#photo div');
 var filter = document.getElementById('filter');
+var filterUL = document.querySelector('#filter ul');
+var filters = filterUL.children;
 
 // Blend
 var blendMode = document.getElementById('blendMode');
@@ -97,6 +99,7 @@ var canvasWidth,canvasHeight,canvasAspect;
 //var 
 var filterImages = [];
 var filterCount = 13;
+filterUL.style.width = 100 * filterCount + 'px';
 
 for (var i = 1; i <= filterCount; i++) {
   filterImages[i] = new Image();
@@ -104,18 +107,17 @@ for (var i = 1; i <= filterCount; i++) {
 
   filterImages[i].onload = finish(i);
   filterImages[i].src = src;
-  var element = document.createElement('img');
-  filter.append(element);
+  var element = document.createElement('li');
+  filterUL.append(element);
 
   function finish(i){
     return function(){
-      var b64 = ImageToBase64(filterImages[i], 'image/jpeg', 50);
-      var filterImg = document.querySelector('#filter img:nth-child(' + i + ')');
-      filterImg.src = b64;
+      var b64 = ImageToBase64(filterImages[i], 'image/jpeg', 300);
+      var filterImg = document.querySelector('#filter li:nth-child(' + i + ')');
+      filterImg.style.backgroundImage = 'url("' + b64 + '")';
     }
   }
 }
-var filters = filter.children;
 
 
 
@@ -174,10 +176,10 @@ btnFilter.addEventListener('touchstart', function (e) {
   loader.style.display='none';
   if (filter.style.display == '') {
     filter.style.display='block';
-    blendMode.style.display='block';
+//    blendMode.style.display='block';
   } else {
     filter.style.display='';
-    blendMode.style.display='';
+//    blendMode.style.display='';
   }
 });
 // MyEventListener オブジェクト作成
@@ -254,6 +256,10 @@ opacity.addEventListener('touchend', function (event) {
 });
 
 //========== Gallerry ==========
+document.querySelector('.test').addEventListener('touchstart', function (e) {
+  alert('a');
+});
+
 btnGallery.addEventListener('touchstart', function (e) {
   loader.style.display='block';
   loader.setAttribute('class', 'fade');

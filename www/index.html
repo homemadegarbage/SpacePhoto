@@ -47,52 +47,38 @@
 </head>
 
 <body>
-  <div id="title">
+  <main id="title">
       <h1>Space Photo</h1>
       <div id="deviceready" class="blink">
+        <p class="event listening test">Gallery</p>
           <!--
-          <p class="event listening">Connecting to Device</p>
-          <p class="event received">Gallery</p>
+        <p class="event received">Gallery</p>
       -->
       </div>
-  </div>
+  </main>
 
-  <div id="photo">
+  <section id="photo">
     <img src="">
     <div class="overlay"></div>
-  </div>
+  </section>
 
-  <div id="filter">
-    <!--
-    <img src="img/filter01.jpg">
-    <img src="img/filter02.jpg">
-    <img src="img/filter03.jpg">
-    <img src="img/filter04.jpg">
-    <img src="img/filter05.jpg">
-    <img src="img/filter06.jpg">
-  -->
-  </div>
+  <section id="filter">
+    <ul></ul>
+  </section>
 
-  <div id="blendMode">
-    <ul>
-      <!--
-      <li id="screen">Screen</li>
-      <li id="overlay" class="active">Overlay</li>
-    -->
-    </ul>
-
+  <section id="blendMode">
     <div id="opacity">
       <div class="bar">
         <span></span>
       </div>
       <div class="btn"></div>
     </div>
-  </div>
+  </section>
 
-  <div id="loader">
-  </div>
+  <section id="loader">
+  </section>
 
-  <div id="menu">
+  <nav id="menu">
     <span id="btnHome">
       <i class="fa fa-home" aria-hidden="true"></i>
     </span>
@@ -119,7 +105,7 @@
     <span id="btnSave">
       <i class="fa fa-check" aria-hidden="true"></i>
     </span>
-</div>
+  </nav>
 
   <script type="text/javascript" src="cordova.js"></script>
 <!--  <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>-->
