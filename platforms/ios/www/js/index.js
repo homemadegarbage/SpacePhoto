@@ -63,11 +63,6 @@ var filter = document.getElementById('filter');
 
 // Blend
 var blendMode = document.getElementById('blendMode');
-/*
-var blendModeCanvas = document.getElementById('blendModeCanvas');
-var screen = document.getElementById('screen');
-var overlay = document.getElementById('overlay');
-*/
 var loader = document.getElementById('loader');
 var menu = document.getElementById('menu');
 var opacity = document.getElementById('opacity');
@@ -81,7 +76,6 @@ var btnBack = document.getElementById('btnBack');
 var btnNext = document.getElementById('btnNext');
 */
 var btnFilter = document.getElementById('btnFilter');
-//var btnBlendMode = document.getElementById('btnBlendMode');
 var btnGallery = document.getElementById('btnGallery');
 var btnSave = document.getElementById('btnSave');
 
@@ -118,9 +112,6 @@ for (var i = 1; i <= filterCount; i++) {
       var b64 = ImageToBase64(filterImages[i], 'image/jpeg', 50);
       var filterImg = document.querySelector('#filter img:nth-child(' + i + ')');
       filterImg.src = b64;
-
-//      filter.append(filterImages[i]);
-      console.log(i);
     }
   }
 }
@@ -144,7 +135,7 @@ function zeroPadding(number, length){
 function ImageToBase64(img, mime_type, height) {
   // New Canvas
   var canvas = document.createElement('canvas');
-  w = img.width / ( img.height / height);
+  var w = img.width / ( img.height / height);
   canvas.width  = w;
   canvas.height = height;
   // Draw Image
@@ -197,48 +188,30 @@ MyEventListener.prototype = {
     elements = [].slice.call( filters );
     var index = elements.indexOf( this );
     index++; 
-    var imgSrc = filterImages[index].src;
+    photo2.style.backgroundImage = 'url("' + filterImages[index].src + '")';
 
-    console.log(imgSrc);
-    photo2.style.backgroundImage = 'url("' + imgSrc + '")';
-    var img = new Image();
-    img.src = this.getAttribute('src');
+    var imgWidth = filterImages[index].width;
+    var imgHeight = filterImages[index].height;
+    var imgAspect = imgWidth / imgHeight;
+    var sx,sy,sw,sh;
 
-    img.onload = function() {
-
-      var imgWidth = img.width;
-      var imgHeight = img.height;
-      var imgAspect = imgWidth / imgHeight;
-      var sx,sy,sw,sh;
-
-      if (canvasAspect >= imgAspect ) {
-        var ratio = canvasWidth / imgWidth;
-        sx = 0;
-        sy = ( imgHeight * ratio - canvasHeight ) / ratio / 2;
-        sw = imgWidth;
-        sh = canvasHeight / ratio;
-        /*
-        alert(canvasWidth+' '+canvasHeight+' '+imgWidth+' '+imgHeight);
-        alert(sx+' '+sy+' '+sw+' '+sh);
-        */
-      } else {
-        var ratio = canvasHeight / imgHeight;
-        sx = ( imgWidth * ratio - canvasWidth ) / ratio / 2;
-        sy = 0;
-        sw = canvasWidth / ratio;
-        sh = imgHeight;
-      }
-      /*
-      alert(imgWidth+' '+canvasHeight+' '+imgHeight+' '+canvasWidth);
-      alert(sx+' '+sy+' '+sw+' '+sh);
-      */
-
-      ctx2.drawImage(img, sx, sy, sw, sh, 0, 0, canvasWidth, canvasHeight);
-
-      var pixelImage = mixCanvas('overlay');
-      ctx.putImageData(pixelImage, 0, 0);
+    if (canvasAspect >= imgAspect ) {
+      var ratio = canvasWidth / imgWidth;
+      sx = 0;
+      sy = ( imgHeight * ratio - canvasHeight ) / ratio / 2;
+      sw = imgWidth;
+      sh = canvasHeight / ratio;
+    } else {
+      var ratio = canvasHeight / imgHeight;
+      sx = ( imgWidth * ratio - canvasWidth ) / ratio / 2;
+      sy = 0;
+      sw = canvasWidth / ratio;
+      sh = imgHeight;
     }
 
+    ctx2.drawImage(filterImages[index], sx, sy, sw, sh, 0, 0, canvasWidth, canvasHeight);
+    var pixelImage = mixCanvas('overlay');
+    ctx.putImageData(pixelImage, 0, 0);
   } 
 }
 // MyEventListener から myEventListener オブジェクトを作成
@@ -246,38 +219,6 @@ var myEventListener = new MyEventListener();
 for (var i = 0; i < filters.length; i++){
     filters[i].addEventListener("click", myEventListener.onMouseClick, false);
 }
-/*
-// BlendMode
-// MyEventListener オブジェクト作成
-var MyEventListener = function() { return this }
-// MyEventListener オブジェクトにonMouseClickメソッドを追加
-MyEventListener.prototype = {
-  onMouseClick: function() { 
-    var id = this.id;
-    photo2.setAttribute('class', id);
-
-    if ( checkActive(this) ) {
-      return;
-    }
-    if ( id == 'screen' ) {
-      screen.className = 'active';
-      overlay.className = '';
-    } else {
-      screen.className = '';
-      overlay.className = 'active';
-    }
-    var pixelImage = mixCanvas(id);
-    ctx.putImageData(pixelImage, 0, 0);
-
-  }
-}
-// MyEventListener から myEventListener オブジェクトを作成
-var myEventListener = new MyEventListener();
-var blendModeChild = blendMode.querySelector('ul').children;
-for (var i = 0; i < blendModeChild.length; i++){
-    blendModeChild[i].addEventListener("click", myEventListener.onMouseClick, false);
-}
-*/
 //========== bar ==========
 function setPosition(element) {
   var touchObject = event.changedTouches[0] ;
@@ -312,18 +253,6 @@ opacity.addEventListener('touchend', function (event) {
   setPosition(this);
 });
 
-//========== btnBlendMode ==========
-/*
-btnBlendMode.addEventListener('touchstart', function (e) {
-  loader.style.display='none';
-  if (blendMode.style.display == '') {
-    blendMode.style.display='block';
-  } else {
-    blendMode.style.display='';
-  }
-});
-*/
-
 //========== Gallerry ==========
 btnGallery.addEventListener('touchstart', function (e) {
   loader.style.display='block';
@@ -356,17 +285,12 @@ btnGallery.addEventListener('touchstart', function (e) {
           canvas1.height = canvasHeight;
           canvas2.width = canvasWidth;
           canvas2.height = canvasHeight;
-          blendModeCanvas.width = canvasWidth;
-          blendModeCanvas.height = canvasHeight;
 
           ctx1.drawImage(img, 0, 0, canvasWidth, canvasHeight);
           imgUrl = canvas1.toDataURL();
         }
-
         resolve();
       }, function(msg){
-//        setTimeout("loader.setAttribute('class', '')", 1000);
-
       }, {
         quality:60,
         targetWidth: 1280,
@@ -399,12 +323,9 @@ btnSave.addEventListener('touchstart', function (e) {
   window.canvas2ImagePlugin.saveImageDataToLibrary (
     function(msg){
       alert('Saving image is successful! : ' + msg);
-//      alert("Saving image is successful!");
-//      Ext.Msg.alert('Success!', 'The image was saved to the photos gallery on your device.');
     },
     function(err){
       alert(err);
-//        console.log(err);
     },
     canvas
   );
@@ -442,7 +363,7 @@ function mixCanvas(blend_type){
         var bR = b_imageData.data[ptr + 0];
         var bG = b_imageData.data[ptr + 1];
         var bB = b_imageData.data[ptr + 2];
-        
+
         pixelImage.data[ptr + 0] = brend_fn(aR,bR);
         pixelImage.data[ptr + 1] = brend_fn(aG,bG);
         pixelImage.data[ptr + 2] = brend_fn(aB,bB);
